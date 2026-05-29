@@ -19,6 +19,16 @@
 <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <style>
+  /* Google翻訳バナー・ツールチップを非表示 */
+  .skiptranslate, .goog-te-banner-frame, .goog-te-gadget, #goog-gt-tt, .goog-tooltip, .goog-tooltip:hover, .goog-text-highlight {
+    display: none !important;
+    visibility: hidden !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+  body { top: 0 !important; position: static !important; }
+  html { margin-top: 0 !important; }
+
   *, *::before, *::after { box-sizing: border-box; }
   body {
     margin: 0;
