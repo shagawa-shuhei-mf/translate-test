@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>翻訳テスト用ダミーページ</title>
+<title>About | 翻訳テスト用ダミーページ</title>
 
 <script>
   function googleTranslateElementInit() {
@@ -19,7 +19,6 @@
 <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <style>
-  /* Google翻訳バナー・ツールチップを非表示 */
   .skiptranslate, .goog-te-banner-frame, .goog-te-gadget, #goog-gt-tt, .goog-tooltip, .goog-tooltip:hover, .goog-text-highlight {
     display: none !important;
     visibility: hidden !important;
@@ -77,7 +76,6 @@
   .lang-btn[aria-current="true"]:hover { background: #2a7d4f; }
   main { max-width: 720px; margin: 0 auto; padding: 32px 24px; }
 
-  /* ボタン内ローディング */
   .lang-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 52px; }
   .lang-btn.loading,
   .lang-btn.loading[aria-current="true"] { color: transparent !important; pointer-events: none; }
@@ -89,28 +87,14 @@
     border-top-color: transparent;
     border-radius: 50%;
     animation: spin .7s linear infinite;
-    color: #2a7d4f; /* activeで背景緑のとき用に白 */
+    color: #2a7d4f;
   }
   .lang-btn.loading[aria-current="true"]::after { color: #fff; }
   @keyframes spin { to { transform: rotate(360deg); } }
   h1 { font-size: 28px; margin: 0 0 16px; }
   h2 { font-size: 20px; margin: 32px 0 12px; border-left: 4px solid #2a7d4f; padding-left: 12px; }
   p { margin: 0 0 16px; }
-  .info-box {
-    background: #fff;
-    border-radius: 8px;
-    padding: 16px 20px;
-    margin: 16px 0;
-    font-size: 13px;
-    box-shadow: 0 1px 2px rgba(0,0,0,.05);
-  }
-  .info-box dt { font-weight: bold; color: #2a7d4f; margin-top: 8px; }
-  .info-box dt:first-child { margin-top: 0; }
-  .info-box dd { margin: 4px 0 0; word-break: break-all; }
-  /* Google翻訳ウィジェットUIを非表示（goog-* は読み込み後に付く） */
   #google_translate_element { display: none; }
-  body { top: 0 !important; }
-  .goog-te-banner-frame { display: none !important; }
 </style>
 </head>
 <body>
@@ -119,8 +103,8 @@
   <div class="header-left">
     <div class="logo">翻訳テストサイト</div>
     <nav class="nav">
-      <a href="./" aria-current="page">Home</a>
-      <a href="./about.html">About</a>
+      <a href="./">Home</a>
+      <a href="./about.html" aria-current="page">About</a>
     </nav>
   </div>
   <div class="langs">
@@ -130,35 +114,23 @@
 </header>
 
 <main>
-  <h1>これは翻訳ボタン検証用のダミーページです</h1>
-  <p>このページは、Webサイトに設置するEN/JA言語切替ボタンの動作を確認するために作成しました。</p>
+  <h1>このサイトについて</h1>
+  <p>このページは、ページ遷移後も翻訳状態が保持されることを確認するためのサブページです。Homeから言語を切り替えた状態でこのページに来ても、同じ言語のまま表示されるはずです。</p>
 
-  <h2>動作仕様</h2>
-  <p>iPhoneやiPadのSafariでENボタンを押した場合は、Google翻訳サイトへ自動的にリダイレクトされます。それ以外の環境（PC、Android、Mac、iPhone Chromeなど）では、Google翻訳ウィジェットによってページ内のテキストが英語に切り替わります。</p>
+  <h2>仕組み</h2>
+  <p>言語切替は <code>googtrans</code> Cookie に保存され、同一ドメイン内の他ページにも自動的に適用されます。そのため、Homeで EN を選択した状態で About に遷移すると、Aboutページも自動で英語表示になります。</p>
 
-  <h2>サンプルコンテンツ</h2>
-  <p>春の訪れとともに、桜の花が街並みを淡いピンクに染め上げます。日本の四季は、自然の移ろいを繊細に感じ取ることができる文化を育んできました。</p>
-  <p>夏には祭りの賑わいが各地で見られ、秋には紅葉が山々を彩ります。冬の静けさの中で、人々は新しい年への希望を胸に抱きます。</p>
+  <h2>iOS Safari の例外</h2>
+  <p>iOS Safari では Cookie の挙動が制限されるため、ENボタン押下時には Google翻訳プロキシ（translate.goog）経由のURLにリダイレクトします。プロキシ上でページ遷移しても、プロキシ内のリンクとして動作します。</p>
 
-  <h2>現在の判定状況</h2>
-  <div class="info-box">
-    <dl>
-      <dt>User Agent</dt>
-      <dd id="ua-out"></dd>
-      <dt>判定結果</dt>
-      <dd id="result-out"></dd>
-      <dt>ENボタンを押した場合の挙動</dt>
-      <dd id="action-out"></dd>
-    </dl>
-  </div>
+  <h2>サンプルテキスト</h2>
+  <p>遷移確認用の長めのテキストです。日本語の柔らかな響きと、漢字・ひらがな・カタカナが織り成す独特のリズムを翻訳エンジンがどう扱うかをチェックできます。</p>
 </main>
 
-<!-- Google翻訳ウィジェット表示エリア -->
 <div id="google_translate_element" aria-hidden="true"></div>
 
 <script>
 (function(){
-  // ===== 言語切替ロジック（実テーマと同等の実装） =====
   function setGoogTransCookie(lang){
     var value = lang === 'ja' ? '' : '/ja/' + lang;
     var host = location.hostname;
@@ -177,9 +149,7 @@
   var isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
   var isIOSSafari = isIOS && isSafari;
 
-  // 現在の言語を判定してactive表示
   function getCurrentLang(){
-    // Google翻訳プロキシ経由（*.translate.goog）の場合は _x_tr_tl パラメータを見る
     if (/\.translate\.goog$/i.test(location.hostname)) {
       var tl = new URLSearchParams(location.search).get('_x_tr_tl');
       return tl === 'en' ? 'en' : 'ja';
@@ -205,8 +175,6 @@
   }
   applyActive();
 
-  // EN状態でロードされた場合、最初からENボタンにスピナーを出す
-  // → Google翻訳が <html> に "translated-ltr" を付けたら停止
   if (getCurrentLang() === 'en') {
     var enBtnInit = document.querySelector('.lang-btn--en');
     var allBtnsInit = document.querySelectorAll('.lang-btn');
@@ -228,7 +196,6 @@
       }
     });
     translateDoneObs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    // 保険: 5秒で強制解除
     setTimeout(function(){
       var bs = document.querySelectorAll('.lang-btn');
       for (var z = 0; z < bs.length; z++) {
@@ -244,12 +211,9 @@
     var btn = this;
     var lang = btn.classList.contains('lang-btn--en') ? 'en' : 'ja';
 
-    // 既に現在の言語なら何もしない
     if (btn.getAttribute('aria-current') === 'true') return;
 
-    // Google翻訳プロキシ(*.translate.goog)上でJAが押されたら元ドメインへ戻す
     if (lang === 'ja' && /\.translate\.goog$/i.test(location.hostname)) {
-      // 例: shagawa--shuhei--mf-github-io.translate.goog → shagawa-shuhei-mf.github.io
       var origHost = location.hostname
         .replace(/\.translate\.goog$/i, '')
         .replace(/--/g, '@@')
@@ -269,7 +233,6 @@
     }
     btn.classList.add('loading');
 
-    // すぐリロード/遷移（待ち時間カット）
     if (isIOSSafari && lang === 'en') {
       location.href = 'https://translate.google.com/translate?sl=ja&tl=en&u=' + encodeURIComponent(location.href);
       return;
@@ -278,7 +241,6 @@
   }
 
   window.addEventListener('pageshow', function(){
-    // EN状態でかつ翻訳未完了ならスピナー維持
     var en = getCurrentLang() === 'en';
     var translated = document.documentElement.classList.contains('translated-ltr') ||
                      document.documentElement.classList.contains('translated-rtl');
@@ -296,14 +258,6 @@
   for (var i = 0; i < btns.length; i++) {
     btns[i].addEventListener('click', onLangClick);
   }
-
-  // ===== デバッグ情報を画面に表示 =====
-  document.getElementById('ua-out').textContent = ua;
-  document.getElementById('result-out').textContent =
-    'isIOS=' + isIOS + ' / isSafari=' + isSafari + ' / isIOSSafari=' + isIOSSafari;
-  document.getElementById('action-out').textContent = isIOSSafari
-    ? 'Google翻訳サイト (translate.google.com) にリダイレクト'
-    : 'googtrans Cookieセット → リロード → ウィジェットが翻訳';
 })();
 </script>
 
