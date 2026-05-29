@@ -62,6 +62,8 @@
     text-decoration: none;
   }
   .lang-btn:hover { background: #2a7d4f; color: #fff; }
+  .lang-btn[aria-current="true"] { background: #2a7d4f; color: #fff; cursor: default; }
+  .lang-btn[aria-current="true"]:hover { background: #2a7d4f; }
   main { max-width: 720px; margin: 0 auto; padding: 32px 24px; }
 
   /* ボタン内ローディング */
@@ -154,29 +156,53 @@
   var isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
   var isIOSSafari = isIOS && isSafari;
 
+  // 現在の言語をcookieから判定してactive表示
+  function getCurrentLang(){
+    var m = document.cookie.match(/googtrans=([^;]+)/);
+    if (!m) return 'ja';
+    var v = decodeURIComponent(m[1]);
+    if (/\/en$/.test(v)) return 'en';
+    return 'ja';
+  }
+  function applyActive(){
+    var cur = getCurrentLang();
+    var btnsAll = document.querySelectorAll('.lang-btn');
+    for (var k = 0; k < btnsAll.length; k++) {
+      var b = btnsAll[k];
+      var isEn = b.classList.contains('lang-btn--en');
+      if ((isEn && cur === 'en') || (!isEn && cur === 'ja')) {
+        b.setAttribute('aria-current', 'true');
+      } else {
+        b.removeAttribute('aria-current');
+      }
+    }
+  }
+  applyActive();
+
   function onLangClick(e){
     e.preventDefault();
     var btn = this;
     var lang = btn.classList.contains('lang-btn--en') ? 'en' : 'ja';
 
+    // 既に現在の言語なら何もしない
+    if (btn.getAttribute('aria-current') === 'true') return;
+
     if (!(isIOSSafari && lang === 'en')) {
       setGoogTransCookie(lang);
     }
 
-    // 全ボタン無効化 + 押したボタンにスピナー
     var allBtns = document.querySelectorAll('.lang-btn');
     for (var j = 0; j < allBtns.length; j++) {
       allBtns[j].style.pointerEvents = 'none';
     }
     btn.classList.add('loading');
 
-    setTimeout(function(){
-      if (isIOSSafari && lang === 'en') {
-        location.href = 'https://translate.google.com/translate?sl=ja&tl=en&u=' + encodeURIComponent(location.href);
-        return;
-      }
-      location.reload();
-    }, 500);
+    // すぐリロード/遷移（待ち時間カット）
+    if (isIOSSafari && lang === 'en') {
+      location.href = 'https://translate.google.com/translate?sl=ja&tl=en&u=' + encodeURIComponent(location.href);
+      return;
+    }
+    location.reload();
   }
 
   window.addEventListener('pageshow', function(){
@@ -185,6 +211,7 @@
       allBtns[j].classList.remove('loading');
       allBtns[j].style.pointerEvents = '';
     }
+    applyActive();
   });
 
   var btns = document.querySelectorAll('.lang-btn');
