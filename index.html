@@ -230,6 +230,18 @@
     // 既に現在の言語なら何もしない
     if (btn.getAttribute('aria-current') === 'true') return;
 
+    // Google翻訳プロキシ(*.translate.goog)上でJAが押されたら元ドメインへ戻す
+    if (lang === 'ja' && /\.translate\.goog$/i.test(location.hostname)) {
+      // 例: shagawa--shuhei--mf-github-io.translate.goog → shagawa-shuhei-mf.github.io
+      var origHost = location.hostname
+        .replace(/\.translate\.goog$/i, '')
+        .replace(/--/g, '@@')
+        .replace(/-/g, '.')
+        .replace(/@@/g, '-');
+      location.href = location.protocol + '//' + origHost + location.pathname;
+      return;
+    }
+
     if (!(isIOSSafari && lang === 'en')) {
       setGoogTransCookie(lang);
     }
