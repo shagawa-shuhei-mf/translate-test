@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0">
+<title>翻訳テスト用ダミーページ</title>
+
+<script>
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'ja',
+      includedLanguages: 'ja,en',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+      autoDisplay: false,
+    }, 'google_translate_element');
+  }
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Hiragino Sans", "Yu Gothic", sans-serif;
+    color: #222;
+    line-height: 1.7;
+    background: #f7f5ef;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .logo { font-weight: bold; font-size: 18px; }
+  .langs { display: flex; gap: 8px; }
+  .lang-btn {
+    appearance: none;
+    border: 1px solid #2a7d4f;
+    background: #fff;
+    color: #2a7d4f;
+    padding: 6px 14px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .lang-btn:hover { background: #2a7d4f; color: #fff; }
+  main { max-width: 720px; margin: 0 auto; padding: 32px 24px; }
+  h1 { font-size: 28px; margin: 0 0 16px; }
+  h2 { font-size: 20px; margin: 32px 0 12px; border-left: 4px solid #2a7d4f; padding-left: 12px; }
+  p { margin: 0 0 16px; }
+  .info-box {
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 13px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  }
+  .info-box dt { font-weight: bold; color: #2a7d4f; margin-top: 8px; }
+  .info-box dt:first-child { margin-top: 0; }
+  .info-box dd { margin: 4px 0 0; word-break: break-all; }
+  /* Google翻訳ウィジェットUIを非表示（goog-* は読み込み後に付く） */
+  #google_translate_element { display: none; }
+  body { top: 0 !important; }
+  .goog-te-banner-frame { display: none !important; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">翻訳テストサイト</div>
+  <div class="langs">
+    <a href="#" class="lang-btn lang-btn--en">EN</a>
+    <a href="#" class="lang-btn lang-btn--ja">JA</a>
+  </div>
+</header>
+
+<main>
+  <h1>これは翻訳ボタン検証用のダミーページです</h1>
+  <p>このページは、Webサイトに設置するEN/JA言語切替ボタンの動作を確認するために作成しました。</p>
+
+  <h2>動作仕様</h2>
+  <p>iPhoneやiPadのSafariでENボタンを押した場合は、Google翻訳サイトへ自動的にリダイレクトされます。それ以外の環境（PC、Android、Mac、iPhone Chromeなど）では、Google翻訳ウィジェットによってページ内のテキストが英語に切り替わります。</p>
+
+  <h2>サンプルコンテンツ</h2>
+  <p>春の訪れとともに、桜の花が街並みを淡いピンクに染め上げます。日本の四季は、自然の移ろいを繊細に感じ取ることができる文化を育んできました。</p>
+  <p>夏には祭りの賑わいが各地で見られ、秋には紅葉が山々を彩ります。冬の静けさの中で、人々は新しい年への希望を胸に抱きます。</p>
+
+  <h2>現在の判定状況</h2>
+  <div class="info-box">
+    <dl>
+      <dt>User Agent</dt>
+      <dd id="ua-out"></dd>
+      <dt>判定結果</dt>
+      <dd id="result-out"></dd>
+      <dt>ENボタンを押した場合の挙動</dt>
+      <dd id="action-out"></dd>
+    </dl>
+  </div>
+</main>
+
+<!-- Google翻訳ウィジェット表示エリア -->
+<div id="google_translate_element" aria-hidden="true"></div>
+
+<script>
+(function(){
+  // ===== 言語切替ロジック（実テーマと同等の実装） =====
+  function setGoogTransCookie(lang){
+    var value = lang === 'ja' ? '' : '/ja/' + lang;
+    var host = location.hostname;
+    var parts = host.split('.');
+    var rootDomain = parts.length >= 2 ? parts.slice(-2).join('.') : host;
+    document.cookie = 'googtrans=' + value + '; path=/;';
+    document.cookie = 'googtrans=' + value + '; path=/; domain=' + host + ';';
+    if (rootDomain && rootDomain !== host) {
+      document.cookie = 'googtrans=' + value + '; path=/; domain=.' + rootDomain + ';';
+    }
+  }
+
+  var ua = navigator.userAgent;
+  var isIOS = /iPhone|iPad|iPod/.test(ua) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
+  var isIOSSafari = isIOS && isSafari;
+
+  function onLangClick(e){
+    e.preventDefault();
+    var lang = this.classList.contains('lang-btn--en') ? 'en' : 'ja';
+
+    if (isIOSSafari && lang === 'en') {
+      location.href = 'https://translate.google.com/translate?sl=ja&tl=en&u=' + encodeURIComponent(location.href);
+      return;
+    }
+
+    setGoogTransCookie(lang);
+    location.reload();
+  }
+
+  var btns = document.querySelectorAll('.lang-btn');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].addEventListener('click', onLangClick);
+  }
+
+  // ===== デバッグ情報を画面に表示 =====
+  document.getElementById('ua-out').textContent = ua;
+  document.getElementById('result-out').textContent =
+    'isIOS=' + isIOS + ' / isSafari=' + isSafari + ' / isIOSSafari=' + isIOSSafari;
+  document.getElementById('action-out').textContent = isIOSSafari
+    ? 'Google翻訳サイト (translate.google.com) にリダイレクト'
+    : 'googtrans Cookieセット → リロード → ウィジェットが翻訳';
+})();
+</script>
+
+</body>
+</html>
