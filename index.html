@@ -160,8 +160,13 @@
   var isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
   var isIOSSafari = isIOS && isSafari;
 
-  // 現在の言語をcookieから判定してactive表示
+  // 現在の言語を判定してactive表示
   function getCurrentLang(){
+    // Google翻訳プロキシ経由（*.translate.goog）の場合は _x_tr_tl パラメータを見る
+    if (/\.translate\.goog$/i.test(location.hostname)) {
+      var tl = new URLSearchParams(location.search).get('_x_tr_tl');
+      return tl === 'en' ? 'en' : 'ja';
+    }
     var m = document.cookie.match(/googtrans=([^;]+)/);
     if (!m) return 'ja';
     var v = decodeURIComponent(m[1]);
