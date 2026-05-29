@@ -29,9 +29,6 @@
   body { top: 0 !important; position: static !important; }
   html { margin-top: 0 !important; }
 
-  /* 翻訳が完了するまでmainを隠して「日本語チラ見え」を防ぐ */
-  html.translating main { visibility: hidden; }
-
   *, *::before, *::after { box-sizing: border-box; }
   body {
     margin: 0;
@@ -167,48 +164,6 @@
     if (/\/en$/.test(v)) return 'en';
     return 'ja';
   }
-
-  // ページロード時点でENならmainを隠す + スピナー継続
-  if (getCurrentLang() === 'en') {
-    document.documentElement.classList.add('translating');
-
-    // 翻訳完了 = <html class="translated-ltr"> が付与される
-    var doneObserver = new MutationObserver(function(){
-      if (document.documentElement.classList.contains('translated-ltr') ||
-          document.documentElement.classList.contains('translated-rtl')) {
-        document.documentElement.classList.remove('translating');
-        var btns2 = document.querySelectorAll('.lang-btn');
-        for (var i = 0; i < btns2.length; i++) {
-          btns2[i].classList.remove('loading');
-          btns2[i].style.pointerEvents = '';
-        }
-        doneObserver.disconnect();
-      }
-    });
-    doneObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-
-    // 保険: 3秒経っても翻訳されなかったら強制解除
-    setTimeout(function(){
-      document.documentElement.classList.remove('translating');
-      var btns3 = document.querySelectorAll('.lang-btn');
-      for (var i = 0; i < btns3.length; i++) {
-        btns3[i].classList.remove('loading');
-        btns3[i].style.pointerEvents = '';
-      }
-      doneObserver.disconnect();
-    }, 3000);
-
-    // ロード直後からENボタンをloading表示にしておく
-    document.addEventListener('DOMContentLoaded', function(){
-      var enBtn = document.querySelector('.lang-btn--en');
-      if (enBtn) {
-        enBtn.classList.add('loading');
-        var all = document.querySelectorAll('.lang-btn');
-        for (var i = 0; i < all.length; i++) all[i].style.pointerEvents = 'none';
-      }
-    });
-  }
-
   function applyActive(){
     var cur = getCurrentLang();
     var btnsAll = document.querySelectorAll('.lang-btn');
@@ -251,11 +206,6 @@
   }
 
   window.addEventListener('pageshow', function(){
-    // 翻訳完了待ち中はスピナーを残す
-    if (document.documentElement.classList.contains('translating')) {
-      applyActive();
-      return;
-    }
     var allBtns = document.querySelectorAll('.lang-btn');
     for (var j = 0; j < allBtns.length; j++) {
       allBtns[j].classList.remove('loading');
