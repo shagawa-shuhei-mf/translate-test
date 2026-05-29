@@ -179,6 +179,40 @@
   }
   applyActive();
 
+  // EN状態でロードされた場合、最初からENボタンにスピナーを出す
+  // → Google翻訳が <html> に "translated-ltr" を付けたら停止
+  if (getCurrentLang() === 'en') {
+    var enBtnInit = document.querySelector('.lang-btn--en');
+    var allBtnsInit = document.querySelectorAll('.lang-btn');
+    if (enBtnInit) {
+      enBtnInit.classList.add('loading');
+      for (var z = 0; z < allBtnsInit.length; z++) {
+        allBtnsInit[z].style.pointerEvents = 'none';
+      }
+    }
+    var translateDoneObs = new MutationObserver(function(){
+      if (document.documentElement.classList.contains('translated-ltr') ||
+          document.documentElement.classList.contains('translated-rtl')) {
+        var bs = document.querySelectorAll('.lang-btn');
+        for (var z = 0; z < bs.length; z++) {
+          bs[z].classList.remove('loading');
+          bs[z].style.pointerEvents = '';
+        }
+        translateDoneObs.disconnect();
+      }
+    });
+    translateDoneObs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    // 保険: 5秒で強制解除
+    setTimeout(function(){
+      var bs = document.querySelectorAll('.lang-btn');
+      for (var z = 0; z < bs.length; z++) {
+        bs[z].classList.remove('loading');
+        bs[z].style.pointerEvents = '';
+      }
+      translateDoneObs.disconnect();
+    }, 5000);
+  }
+
   function onLangClick(e){
     e.preventDefault();
     var btn = this;
@@ -206,10 +240,16 @@
   }
 
   window.addEventListener('pageshow', function(){
-    var allBtns = document.querySelectorAll('.lang-btn');
-    for (var j = 0; j < allBtns.length; j++) {
-      allBtns[j].classList.remove('loading');
-      allBtns[j].style.pointerEvents = '';
+    // EN状態でかつ翻訳未完了ならスピナー維持
+    var en = getCurrentLang() === 'en';
+    var translated = document.documentElement.classList.contains('translated-ltr') ||
+                     document.documentElement.classList.contains('translated-rtl');
+    if (!(en && !translated)) {
+      var allBtns = document.querySelectorAll('.lang-btn');
+      for (var j = 0; j < allBtns.length; j++) {
+        allBtns[j].classList.remove('loading');
+        allBtns[j].style.pointerEvents = '';
+      }
     }
     applyActive();
   });
