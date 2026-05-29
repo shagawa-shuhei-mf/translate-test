@@ -68,15 +68,19 @@
 
   /* ボタン内ローディング */
   .lang-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 52px; }
-  .lang-btn.loading { color: transparent; pointer-events: none; }
+  .lang-btn.loading,
+  .lang-btn.loading[aria-current="true"] { color: transparent !important; pointer-events: none; }
   .lang-btn.loading::after {
     content: "";
     position: absolute;
     width: 14px; height: 14px;
-    border: 2px solid #2a7d4f; border-top-color: transparent;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
     border-radius: 50%;
     animation: spin .7s linear infinite;
+    color: #2a7d4f; /* activeで背景緑のとき用に白 */
   }
+  .lang-btn.loading[aria-current="true"]::after { color: #fff; }
   @keyframes spin { to { transform: rotate(360deg); } }
   h1 { font-size: 28px; margin: 0 0 16px; }
   h2 { font-size: 20px; margin: 32px 0 12px; border-left: 4px solid #2a7d4f; padding-left: 12px; }
