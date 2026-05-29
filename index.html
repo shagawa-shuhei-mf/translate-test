@@ -62,33 +62,18 @@
     text-decoration: none;
   }
   .lang-btn:hover { background: #2a7d4f; color: #fff; }
-  main {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 32px 24px;
-    position: relative;
-    min-height: 60vh;
-    transition: opacity .35s ease;
-  }
-  main.fading { opacity: 0; }
+  main { max-width: 720px; margin: 0 auto; padding: 32px 24px; }
 
-  .lang-overlay {
-    position: absolute; inset: 0;
-    background: rgba(247,245,239,.92);
-    display: flex; align-items: flex-start; justify-content: center;
-    padding-top: 80px;
-    opacity: 0; pointer-events: none;
-    transition: opacity .25s ease;
-    z-index: 5;
-    font-size: 15px; color: #2a7d4f; font-weight: 600;
-    letter-spacing: .02em;
-  }
-  .lang-overlay.active { opacity: 1; pointer-events: auto; }
-  .lang-overlay .spinner {
-    width: 18px; height: 18px;
+  /* ボタン内ローディング */
+  .lang-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 52px; }
+  .lang-btn.loading { color: transparent; pointer-events: none; }
+  .lang-btn.loading::after {
+    content: "";
+    position: absolute;
+    width: 14px; height: 14px;
     border: 2px solid #2a7d4f; border-top-color: transparent;
-    border-radius: 50%; margin-right: 10px;
-    animation: spin .8s linear infinite;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
   h1 { font-size: 28px; margin: 0 0 16px; }
@@ -143,10 +128,6 @@
       <dd id="action-out"></dd>
     </dl>
   </div>
-
-  <div class="lang-overlay" id="langOverlay" aria-hidden="true">
-    <div class="spinner"></div><span>Translating…</span>
-  </div>
 </main>
 
 <!-- Google翻訳ウィジェット表示エリア -->
@@ -173,23 +154,21 @@
   var isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
   var isIOSSafari = isIOS && isSafari;
 
-  var mainEl = document.querySelector('main');
-  var overlay = document.getElementById('langOverlay');
-
-  function showLoading(){
-    overlay.classList.add('active');
-    mainEl.classList.add('fading');
-  }
-
   function onLangClick(e){
     e.preventDefault();
-    var lang = this.classList.contains('lang-btn--en') ? 'en' : 'ja';
+    var btn = this;
+    var lang = btn.classList.contains('lang-btn--en') ? 'en' : 'ja';
 
-    // 先にcookieセット → 演出 → リロード
     if (!(isIOSSafari && lang === 'en')) {
       setGoogTransCookie(lang);
     }
-    showLoading();
+
+    // 全ボタン無効化 + 押したボタンにスピナー
+    var allBtns = document.querySelectorAll('.lang-btn');
+    for (var j = 0; j < allBtns.length; j++) {
+      allBtns[j].style.pointerEvents = 'none';
+    }
+    btn.classList.add('loading');
 
     setTimeout(function(){
       if (isIOSSafari && lang === 'en') {
@@ -197,12 +176,15 @@
         return;
       }
       location.reload();
-    }, 650);
+    }, 500);
   }
 
   window.addEventListener('pageshow', function(){
-    overlay.classList.remove('active');
-    mainEl.classList.remove('fading');
+    var allBtns = document.querySelectorAll('.lang-btn');
+    for (var j = 0; j < allBtns.length; j++) {
+      allBtns[j].classList.remove('loading');
+      allBtns[j].style.pointerEvents = '';
+    }
   });
 
   var btns = document.querySelectorAll('.lang-btn');
