@@ -232,7 +232,9 @@
     btn.classList.add('loading');
 
     if (isIOSSafari && lang === 'en') {
-      location.href = 'https://translate.google.com/translate?sl=ja&tl=en&u=' + encodeURIComponent(location.href);
+      var proxyHost = location.hostname.replace(/-/g, '--').replace(/\./g, '-') + '.translate.goog';
+      var sep = location.search ? '&' : '?';
+      location.href = location.protocol + '//' + proxyHost + location.pathname + location.search + sep + '_x_tr_sl=ja&_x_tr_tl=en&_x_tr_hl=ja';
       return;
     }
     location.reload();
